@@ -1,0 +1,39 @@
+/* 
+  Rlevel Carpentry Solutions
+  Global Stylesheet
+  
+  Paste your CSS exported from Google Stitch below this section.
+*/
+
+:root {
+  /* You can define CSS variables here if your design uses them */
+  --primary-color: #333333;
+  --secondary-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* 
+  Placeholder styles - remove these once you add your Stitch CSS 
+*/
+.placeholder-header {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 2rem;
+  text-align: center;
+}
+
+.placeholder-main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
