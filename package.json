@@ -1,0 +1,20 @@
+{
+  "name": "rlevel",
+  "version": "1.0.0",
+  "description": "Rlevel Carpentry Solutions static website",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "check": "python3 scripts/check-site.py",
+    "deploy:preview": "npx --yes wrangler pages deploy . --project-name=rlevel --branch=preview --env-file .env",
+    "deploy:prod": "npx --yes wrangler pages deploy . --project-name=rlevel --branch=main --env-file .env"
+  },
+  "keywords": [
+    "carpentry",
+    "fire-doors",
+    "commercial-carpentry",
+    "cloudflare-pages"
+  ],
+  "author": "Mark Mosbauer",
+  "license": "UNLICENSED"
+}
