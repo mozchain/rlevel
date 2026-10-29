@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rlevelcarpentrysolutions.com.au/sitemap.xml
+Sitemap: https://rlevel.com.au/sitemap.xml

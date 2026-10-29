@@ -171,7 +171,7 @@ def check_sitemap(html_files):
         return
 
     # Map URLs to expected pages
-    base_domain = "https://rlevelcarpentrysolutions.com.au"
+    base_domain = "https://rlevel.com.au"
     sitemap_paths = []
     for u in urls:
         if not u.startswith(base_domain):

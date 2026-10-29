@@ -1,7 +1,7 @@
 # Rlevel Carpentry Solutions — Software Development Lifecycle (SDLC)
 
 *Owner: Mark Mosbauer (Product Owner)*  
-*Target Domain: `rlevelcarpentrysolutions.com.au`*  
+*Target Domain: `rlevel.com.au`*  
 *Deployment Target: Cloudflare Pages*
 
 ---
@@ -27,7 +27,7 @@ The core principle adapted from institutional projects is:
 | **Stage 3** | Automated Stage | **Automated Quality Check** | System (`npm run check`) | Runs `scripts/check-site.py` validating 100% link resolution, image alt tags, sitemap alignment, and asset size hygiene. Must pass with 0 errors. |
 | **Stage 4** | Automated Stage | **Preview Deployment** | System (`npm run deploy:preview`) | Deploys to Cloudflare Pages preview alias (`https://preview.rlevel.pages.dev`). |
 | **◆ GATE 2** | **HUMAN GATE** | **Visual Sign-Off** | **Product Owner** | Mark tests preview URL on mobile and desktop viewports, confirming layout, typography, and UX. |
-| **◆ GATE 3** | **HUMAN GATE** | **Production Release** | **Product Owner** | Branch is merged to `main`. Cloudflare Pages deploys to `rlevelcarpentrysolutions.com.au`. |
+| **◆ GATE 3** | **HUMAN GATE** | **Production Release** | **Product Owner** | Branch is merged to `main`. Cloudflare Pages deploys to `rlevel.com.au`. |
 
 ---
 

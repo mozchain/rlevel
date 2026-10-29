@@ -1,6 +1,6 @@
 # Rlevel Project Constitution & SDLC Guidelines
 
-Welcome to **Rlevel Carpentry Solutions** (`rlevelcarpentrysolutions.com.au`).
+Welcome to **Rlevel Carpentry Solutions** (`rlevel.com.au`).
 All AI agents and developers contributing to this codebase MUST strictly adhere to this SDLC framework. **No vibe coding or direct unverified edits permitted.**
 
 ---
@@ -33,7 +33,7 @@ All AI agents and developers contributing to this codebase MUST strictly adhere 
        │
   ◆ GATE 2: VISUAL SIGN-OFF ──── Product Owner inspects `https://preview.rlevel.pages.dev`
        │
-  ◆ GATE 3: PROD RELEASE ─────── Merge PR to `main` -> live on rlevelcarpentrysolutions.com.au
+  ◆ GATE 3: PROD RELEASE ─────── Merge PR to `main` -> live on rlevel.com.au
 ```
 
 ---

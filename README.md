@@ -1,6 +1,6 @@
 # Rlevel Carpentry Solutions
 
-This is the repository for the **Rlevel** website (`rlevelcarpentrysolutions.com.au`).
+This is the repository for the **Rlevel** website (`rlevel.com.au`).
 This static website project has been set up to easily integrate designs exported from **Google Stitch**.
 
 ## Project Structure
@@ -26,4 +26,4 @@ Since this is a static site, deploying to Cloudflare Pages is seamless:
 4. Select your `rlevel` repository.
 5. Leave the **Build settings** empty (Framework preset: None, Build command: empty, Build output directory: empty/root).
 6. Click **Save and Deploy**.
-7. Once deployed, you can assign your custom domain `rlevelcarpentrysolutions.com.au` to this Pages project in the **Custom Domains** tab of the project settings.
+7. Once deployed, you can assign your custom domain `rlevel.com.au` to this Pages project in the **Custom Domains** tab of the project settings.

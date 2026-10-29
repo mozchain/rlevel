@@ -31,7 +31,7 @@ List any images, icons, or graphics required:
 ## 4. SEO & Metadata Requirements
 - **Page Title:**
 - **Meta Description:**
-- **Sitemap Route:** `https://rlevelcarpentrysolutions.com.au/[route]`
+- **Sitemap Route:** `https://rlevel.com.au/[route]`
 - **Robots Indexing:** Index, Follow
 
 ---
