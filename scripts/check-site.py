@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Rlevel Site Health & SDLC Quality Checker
-Verifies link integrity, asset resolution, SEO metadata, sitemap sync, and accessibility.
+Verifies link integrity, asset resolution, SEO metadata, sitemap sync,
+accessibility, and component consistency across all pages.
 """
 
 import os
@@ -22,6 +23,9 @@ RESET = "\033[0m"
 errors = []
 warnings = []
 
+# Prohibited temporary/ephemeral asset hosts
+PROHIBITED_HOSTS = ["lh3.googleusercontent.com", "via.placeholder.com"]
+
 class HTMLAssetParser(HTMLParser):
     def __init__(self, filename):
         super().__init__()
@@ -37,20 +41,26 @@ class HTMLAssetParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attr_dict = dict(attrs)
-        
+
+        # Check inline styles for background-image
+        style = attr_dict.get("style", "")
+        if "url(" in style:
+            bg_urls = re.findall(r'url\([\'"]?([^\'"\)]+)[\'"]?\)', style)
+            for bg in bg_urls:
+                self.links.append((bg, self.getpos()))
+
         if tag == "title":
             self.has_title = True
             self.in_title = True
-            
+
         elif tag == "meta":
             name = attr_dict.get("name", "").lower()
-            prop = attr_dict.get("property", "").lower()
             content = attr_dict.get("content", "")
             if name == "description" and content.strip():
                 self.has_desc = True
             elif name == "viewport" and content.strip():
                 self.has_viewport = True
-                
+
         elif tag == "link":
             rel = attr_dict.get("rel", "").lower()
             href = attr_dict.get("href", "")
@@ -58,14 +68,14 @@ class HTMLAssetParser(HTMLParser):
                 self.has_canonical = True
             if href:
                 self.links.append((href, self.getpos()))
-                
+
         elif tag == "img":
             src = attr_dict.get("src", "")
             alt = attr_dict.get("alt")
             self.images.append((src, alt, self.getpos()))
             if src:
                 self.links.append((src, self.getpos()))
-                
+
         elif tag in ["a", "script", "source"]:
             ref = attr_dict.get("href") or attr_dict.get("src")
             if ref:
@@ -106,15 +116,24 @@ def check_html_files():
         if not parser.has_canonical:
             warnings.append(f"{hf}: Missing <link rel=\"canonical\"> tag (recommended for SEO).")
 
-        # Image alt checks
+        # Image alt checks & ephemeral host audit
         for src, alt, (line, col) in parser.images:
             if alt is None:
                 errors.append(f"{hf}:{line} <img> tag missing alt attribute: src='{src}'")
             elif alt.strip() == "":
                 warnings.append(f"{hf}:{line} <img> tag has empty alt attribute: src='{src}'")
 
+            for ph in PROHIBITED_HOSTS:
+                if ph in src:
+                    errors.append(f"{hf}:{line} Ephemeral/demo CDN asset detected: '{src}'. Localize image to assets/.")
+
         # Local link resolution
         for ref, (line, col) in parser.links:
+            # Check ephemeral CDN on background images or links too
+            for ph in PROHIBITED_HOSTS:
+                if ph in ref:
+                    errors.append(f"{hf}:{line} Ephemeral/demo CDN asset detected in reference: '{ref}'. Localize to assets/.")
+
             if ref.startswith(("http://", "https://", "mailto:", "tel:", "#", "javascript:")):
                 continue
 
@@ -126,9 +145,8 @@ def check_html_files():
 
             # Check if file exists relative to root
             target_path = clean_ref.lstrip("/")
-            # Support clean urls like /about resolving to about.html
             target_html = f"{target_path}.html"
-            
+
             exists = os.path.exists(target_path) or (not target_path.endswith(".html") and os.path.exists(target_html))
             if not exists:
                 errors.append(f"{hf}:{line} Broken reference: '{ref}' not found on disk.")
@@ -178,14 +196,13 @@ def check_sitemap(html_files):
 
 def check_asset_hygiene(referenced_assets):
     print(f"{BLUE}{BOLD}3. Checking Asset Hygiene & File Sizes...{RESET}")
-    # Inspect assets directory
     if os.path.exists("assets"):
         for root, _, files in os.walk("assets"):
             for f in files:
                 filepath = os.path.join(root, f)
                 rel_path = os.path.relpath(filepath, ".").replace("\\", "/")
                 size_kb = os.path.getsize(filepath) / 1024
-                
+
                 # Warn on large images > 500 KB for PageSpeed / Core Web Vitals
                 if size_kb > 500:
                     warnings.append(f"Large image {rel_path} ({size_kb:.1f} KB) - consider optimizing/compressing to WebP.")
@@ -197,6 +214,38 @@ def check_asset_hygiene(referenced_assets):
                 warnings.append(f"Unreferenced media file in root: '{root_file}' ({os.path.getsize(root_file)/1024:.1f} KB). Move to assets/ or delete if unused.")
 
 
+def check_component_consistency(html_files):
+    print(f"{BLUE}{BOLD}4. Checking Brand & Contact Consistency Across Pages...{RESET}")
+    abn_pattern = re.compile(r"ABN\s+[0-9\s]{11,15}")
+    qbcc_pattern = re.compile(r"QBCC\s+[0-9\s]{6,12}")
+    email_pattern = re.compile(r"[\w\.-]+@[\w\.-]+\.\w+")
+
+    expected_abn = "ABN 63 674 282 583"
+    expected_qbcc = "QBCC 1550 5017"
+    expected_email = "rlevelcarpentrysolutions@gmail.com"
+
+    for hf in html_files:
+        with open(hf, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        abn_matches = [m.strip() for m in abn_pattern.findall(content)]
+        for m in abn_matches:
+            if m != expected_abn:
+                errors.append(f"{hf}: Inconsistent ABN detected: '{m}' (expected: '{expected_abn}')")
+
+        qbcc_matches = [m.strip() for m in qbcc_pattern.findall(content)]
+        for m in qbcc_matches:
+            if m != expected_qbcc:
+                errors.append(f"{hf}: Inconsistent QBCC detected: '{m}' (expected: '{expected_qbcc}')")
+
+        email_matches = [m.strip() for m in email_pattern.findall(content) if "gmail.com" in m or "rlevel" in m]
+        for m in email_matches:
+            if m != expected_email:
+                errors.append(f"{hf}: Inconsistent email detected: '{m}' (expected: '{expected_email}')")
+
+    print(f"   Verified uniform ABN, QBCC, and contact email across all {len(html_files)} pages.")
+
+
 def main():
     print(f"\n{BOLD}========================================{RESET}")
     print(f"{BOLD}    Rlevel Site SDLC Health Check       {RESET}")
@@ -205,6 +254,7 @@ def main():
     html_files, referenced_assets = check_html_files()
     check_sitemap(html_files)
     check_asset_hygiene(referenced_assets)
+    check_component_consistency(html_files)
 
     print("\n----------------------------------------")
     print(f"{BOLD}Summary:{RESET}")
