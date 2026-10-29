@@ -23,8 +23,8 @@ RESET = "\033[0m"
 errors = []
 warnings = []
 
-# Prohibited temporary/ephemeral asset hosts
-PROHIBITED_HOSTS = ["lh3.googleusercontent.com", "via.placeholder.com"]
+# Prohibited temporary/ephemeral asset hosts and dev-only CDNs
+PROHIBITED_HOSTS = ["lh3.googleusercontent.com", "via.placeholder.com", "cdn.tailwindcss.com"]
 
 class HTMLAssetParser(HTMLParser):
     def __init__(self, filename):

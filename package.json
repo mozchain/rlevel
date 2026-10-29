@@ -5,9 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "python3 -m http.server 3000",
-    "check": "python3 scripts/check-site.py",
-    "deploy:preview": "npx --yes wrangler pages deploy . --project-name=rlevel --branch=preview --env-file .env",
-    "deploy:prod": "npx --yes wrangler pages deploy . --project-name=rlevel --branch=main --env-file .env"
+    "build:css": "tailwindcss -i ./css/input.css -o ./css/style.css --minify",
+    "watch:css": "tailwindcss -i ./css/input.css -o ./css/style.css --watch",
+    "check": "npm run build:css && python3 scripts/check-site.py",
+    "deploy:preview": "npm run build:css && npx --yes wrangler pages deploy . --project-name=rlevel --branch=preview --env-file .env",
+    "deploy:prod": "npm run build:css && npx --yes wrangler pages deploy . --project-name=rlevel --branch=main --env-file .env"
   },
   "keywords": [
     "carpentry",
@@ -16,5 +18,8 @@
     "cloudflare-pages"
   ],
   "author": "Mark Mosbauer",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
 }
